@@ -21,6 +21,17 @@ const MatchCard = ({ candidate }) => {
       <p className="mt-3 text-green-400 font-semibold">
         {candidate.finalScore.toFixed(0)}%
       </p>
+      <p className="mt-4 text-slate-300">
+  AI Score:
+  <span className="text-blue-400 font-bold">
+    {" "}
+    {candidate.aiScore}
+  </span>
+</p>
+
+<p className="mt-3 text-slate-400 leading-7">
+  {candidate.aiReason}
+</p>
     </div>
   );
 };
