@@ -18,7 +18,7 @@ async (req, res) => {
     const candidates =
       await Candidate.find();
 
-    const rankedCandidates =
+    const results =
       candidates.map(
         (candidate) =>
           calculateMatch(
@@ -37,19 +37,15 @@ async (req, res) => {
           a.finalScore
       );
 
-    res.json(
-      rankedCandidates
-    );
+    res.json(results);
 
   } catch (error) {
 
     console.log(error);
 
     res.status(500).json({
-
       message:
       "Matching failed",
-
     });
   }
 };

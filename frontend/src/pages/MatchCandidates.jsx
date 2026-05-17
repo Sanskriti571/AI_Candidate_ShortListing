@@ -15,7 +15,9 @@ const MatchCandidates = () => {
     const res = await API.post("/match", {
       requiredSkills: requiredSkills.split(","),
       minExperience,
-    });
+    }
+  );
+  console.log(response.data);
 
     setResults(res.data);
   };
