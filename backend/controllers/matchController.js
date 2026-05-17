@@ -87,8 +87,11 @@ ${c.finalScore}
 
 `).join("\n")}
 
-Return ONLY valid JSON array.
-
+IMPORTANT:
+Return ONLY raw JSON.
+Do not add markdown.
+Do not add explanation text.
+Do not use \`\`\`json
 Format:
 
 [
@@ -138,12 +141,26 @@ Format:
         }
       );
 
-    const aiData =
-      JSON.parse(
-        response.data
-        .choices[0]
-        .message.content
-      );
+    let aiData = [];
+
+try {
+
+  const content =
+    response.data
+    .choices[0]
+    .message.content;
+
+  aiData =
+    JSON.parse(content);
+
+} catch (error) {
+
+  console.log(
+    "AI JSON Parse Failed"
+  );
+
+  aiData = [];
+}
 
     // Combine Scores
 
