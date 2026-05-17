@@ -1,6 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
+
 import MatchCard from "../components/MatchCard";
+import Charts from "../components/Charts";
 
 const MatchCandidates = () => {
 
@@ -44,14 +46,10 @@ const MatchCandidates = () => {
         }
       );
 
-      console.log("MATCH RESPONSE:");
-      console.log(response.data);
-
       setMatches(response.data);
 
     } catch (error) {
 
-      console.log("MATCH ERROR:");
       console.log(error);
 
     }
@@ -116,23 +114,30 @@ const MatchCandidates = () => {
 
         matches.length > 0 && (
 
-          <div className="grid md:grid-cols-2 gap-8">
+          <>
 
-            {
+            <div className="grid md:grid-cols-2 gap-8">
 
-              matches.map(
-                (candidate, index) => (
+              {
 
-                  <MatchCard
-                    key={index}
-                    candidate={candidate}
-                  />
+                matches.map(
+                  (candidate, index) => (
+
+                    <MatchCard
+                      key={index}
+                      candidate={candidate}
+                    />
+                  )
                 )
-              )
 
-            }
+              }
 
-          </div>
+            </div>
+
+            <Charts data={matches} />
+
+          </>
+
         )
       }
 
