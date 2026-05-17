@@ -1,68 +1,130 @@
 import { useState } from "react";
-import API from "../services/api";
-
-import Navbar from "../components/Navbar";
+import axios from "axios";
 import MatchCard from "../components/MatchCard";
-import Charts from "../components/Charts";
 
 const MatchCandidates = () => {
-  const [requiredSkills, setRequiredSkills] = useState("");
-  const [minExperience, setMinExperience] = useState(0);
 
-  const [results, setResults] = useState([]);
+  const [requiredSkills, setRequiredSkills] =
+    useState("");
 
-  const handleMatch = async () => {
-    const res = await API.post("/match", {
-      requiredSkills: requiredSkills.split(","),
-      minExperience,
-    }
-  );
-  console.log(response.data);
+  const [preferredSkills, setPreferredSkills] =
+    useState("");
 
-    setResults(res.data);
-  };
+  const [minExperience, setMinExperience] =
+    useState("");
+
+  const [matches, setMatches] =
+    useState([]);
+
+  const handleMatch =
+    async () => {
+
+      try {
+
+        const response =
+          await axios.post(
+
+            "https://ats-backend-080t.onrender.com/api/match",
+
+            {
+
+              requiredSkills:
+              requiredSkills
+                .split(","),
+
+              preferredSkills:
+              preferredSkills
+                .split(","),
+
+              minExperience:
+              Number(minExperience),
+
+            }
+          );
+
+        console.log(
+          response.data
+        );
+
+        setMatches(
+          response.data
+        );
+
+      } catch (error) {
+
+        console.log(error);
+      }
+    };
+
   return (
-    <div>
-      <Navbar />
 
-      <div className="p-10">
-        <h1 className="text-4xl font-bold text-blue-400 mb-8">
+    <div className="min-h-screen bg-[#020617] text-white p-10">
+
+      <h1 className="text-6xl font-bold text-blue-400 mb-10">
+        Match Candidates
+      </h1>
+
+      <div className="bg-slate-800 p-6 rounded-3xl mb-10">
+
+        <input
+          type="text"
+          placeholder="Required Skills (react,nodejs)"
+          value={requiredSkills}
+          onChange={(e) =>
+            setRequiredSkills(
+              e.target.value
+            )
+          }
+          className="w-full p-4 rounded-xl bg-slate-700 mb-5"
+        />
+
+        <input
+          type="text"
+          placeholder="Preferred Skills"
+          value={preferredSkills}
+          onChange={(e) =>
+            setPreferredSkills(
+              e.target.value
+            )
+          }
+          className="w-full p-4 rounded-xl bg-slate-700 mb-5"
+        />
+
+        <input
+          type="number"
+          placeholder="Minimum Experience"
+          value={minExperience}
+          onChange={(e) =>
+            setMinExperience(
+              e.target.value
+            )
+          }
+          className="w-full p-4 rounded-xl bg-slate-700 mb-5"
+        />
+
+        <button
+          onClick={handleMatch}
+          className="bg-blue-500 px-8 py-4 rounded-xl font-bold"
+        >
           Match Candidates
-        </h1>
+        </button>
 
-        <div className="bg-slate-800 p-6 rounded-2xl space-y-4">
-          <input
-            type="text"
-            placeholder="React, Node.js"
-            onChange={(e) => setRequiredSkills(e.target.value)}
-            className="w-full p-3 rounded-lg bg-slate-700"
-          />
+      </div>
 
-          <input
-            type="number"
-            placeholder="Minimum Experience"
-            onChange={(e) => setMinExperience(e.target.value)}
-            className="w-full p-3 rounded-lg bg-slate-700"
-          />
-          <button
-            onClick={handleMatch}
-            className="bg-blue-500 hover:bg-blue-600 px-6 py-3 rounded-lg font-semibold"
-          >
-            Match Candidates
-          </button>
-        </div>
+      <div className="grid md:grid-cols-2 gap-8">
 
-        <div className="grid md:grid-cols-2 gap-5 mt-10">
-          {results.map((candidate) => (
+        {matches.map(
+          (candidate, index) => (
+
             <MatchCard
-              key={candidate._id}
+              key={index}
               candidate={candidate}
             />
-          ))}
-        </div>
+          )
+        )}
 
-        {results.length > 0 && <Charts data={results} />}
       </div>
+
     </div>
   );
 };
