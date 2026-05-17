@@ -41,18 +41,20 @@ const skillRelations = {
 };
 
 
-// Normalize Skills
+// SAFE NORMALIZE
 
 function normalize(skill) {
 
-  return skill
+  if (!skill) return "";
+
+  return String(skill)
     .toLowerCase()
     .replace(/\s/g, "")
     .replace(/\./g, "");
 }
 
 
-// Check semantic relation
+// SEMANTIC CHECK
 
 function isRelated(
   candidateSkill,
@@ -65,16 +67,12 @@ function isRelated(
   requiredSkill =
     normalize(requiredSkill);
 
-  // Exact Match
-
   if (
     candidateSkill ===
     requiredSkill
   ) {
     return true;
   }
-
-  // Related Skill Match
 
   if (
     skillRelations[
@@ -106,18 +104,16 @@ function calculateMatch(
 ) {
 
   const requiredSkills =
-    job.requiredSkills.map(
-      normalize
-    );
+    (job.requiredSkills || [])
+    .map(normalize);
 
   const preferredSkills =
     (job.preferredSkills || [])
     .map(normalize);
 
   const candidateSkills =
-    candidate.skills.map(
-      normalize
-    );
+    (candidate.skills || [])
+    .map(normalize);
 
   let matchedSkills = [];
 
@@ -150,7 +146,7 @@ function calculateMatch(
   );
 
 
-  // PREFERRED SKILLS BONUS
+  // PREFERRED BONUS
 
   preferredSkills.forEach(
     (preferredSkill) => {
@@ -183,7 +179,7 @@ function calculateMatch(
   }
 
 
-  // PROJECT ANALYSIS BONUS
+  // PROJECT BONUS
 
   const projectText =
     (
@@ -217,7 +213,7 @@ function calculateMatch(
   }
 
 
-  // BIO ANALYSIS BONUS
+  // BIO BONUS
 
   const bio =
     (
@@ -249,7 +245,7 @@ function calculateMatch(
   }
 
 
-  // LIMIT SCORE
+  // MAX SCORE
 
   if (score > 100) {
     score = 100;
@@ -262,6 +258,7 @@ function calculateMatch(
     "Low Match";
 
   if (score >= 80) {
+
     category =
       "High Match";
   }
@@ -269,6 +266,7 @@ function calculateMatch(
   else if (
     score >= 50
   ) {
+
     category =
       "Medium Match";
   }
@@ -280,7 +278,8 @@ function calculateMatch(
 
     matchedSkills,
 
-    finalScore: score,
+    finalScore:
+      Math.round(score),
 
     category,
   };

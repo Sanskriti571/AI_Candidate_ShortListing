@@ -16,45 +16,46 @@ const MatchCandidates = () => {
   const [matches, setMatches] =
     useState([]);
 
-  const handleMatch =
-    async () => {
+  const handleMatch = async () => {
 
-      try {
+    try {
 
-        const response =
-          await axios.post(
+      const response = await axios.post(
 
-            "https://ats-backend-080t.onrender.com/api/match",
+        "https://ats-backend-080t.onrender.com/api/match",
 
-            {
+        {
 
-              requiredSkills:
-              requiredSkills
-                .split(","),
+          requiredSkills:
+            requiredSkills
+              .split(",")
+              .map(skill => skill.trim())
+              .filter(skill => skill !== ""),
 
-              preferredSkills:
-              preferredSkills
-                .split(","),
+          preferredSkills:
+            preferredSkills
+              .split(",")
+              .map(skill => skill.trim())
+              .filter(skill => skill !== ""),
 
-              minExperience:
-              Number(minExperience),
+          minExperience:
+            Number(minExperience) || 0,
 
-            }
-          );
+        }
+      );
 
-        console.log(
-          response.data
-        );
+      console.log("MATCH RESPONSE:");
+      console.log(response.data);
 
-        setMatches(
-          response.data
-        );
+      setMatches(response.data);
 
-      } catch (error) {
+    } catch (error) {
 
-        console.log(error);
-      }
-    };
+      console.log("MATCH ERROR:");
+      console.log(error);
+
+    }
+  };
 
   return (
 
@@ -75,7 +76,7 @@ const MatchCandidates = () => {
               e.target.value
             )
           }
-          className="w-full p-4 rounded-xl bg-slate-700 mb-5"
+          className="w-full p-4 rounded-xl bg-slate-700 mb-5 outline-none"
         />
 
         <input
@@ -87,7 +88,7 @@ const MatchCandidates = () => {
               e.target.value
             )
           }
-          className="w-full p-4 rounded-xl bg-slate-700 mb-5"
+          className="w-full p-4 rounded-xl bg-slate-700 mb-5 outline-none"
         />
 
         <input
@@ -99,31 +100,41 @@ const MatchCandidates = () => {
               e.target.value
             )
           }
-          className="w-full p-4 rounded-xl bg-slate-700 mb-5"
+          className="w-full p-4 rounded-xl bg-slate-700 mb-5 outline-none"
         />
 
         <button
           onClick={handleMatch}
-          className="bg-blue-500 px-8 py-4 rounded-xl font-bold"
+          className="bg-blue-500 hover:bg-blue-600 transition px-8 py-4 rounded-xl font-bold"
         >
           Match Candidates
         </button>
 
       </div>
 
-      <div className="grid md:grid-cols-2 gap-8">
+      {
 
-        {matches.map(
-          (candidate, index) => (
+        matches.length > 0 && (
 
-            <MatchCard
-              key={index}
-              candidate={candidate}
-            />
-          )
-        )}
+          <div className="grid md:grid-cols-2 gap-8">
 
-      </div>
+            {
+
+              matches.map(
+                (candidate, index) => (
+
+                  <MatchCard
+                    key={index}
+                    candidate={candidate}
+                  />
+                )
+              )
+
+            }
+
+          </div>
+        )
+      }
 
     </div>
   );
